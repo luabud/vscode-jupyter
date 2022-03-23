@@ -573,6 +573,15 @@ function isBuiltInModuleOverwritten(
 }
 
 export function displayErrorsInCell(cell: NotebookCell, execution: NotebookCellExecution, errorMessage: string) {
+    const output = createOutputWithErrorMessageForDisplay(errorMessage);
+    if (!output) {
+        return;
+    }
+    void execution.clearOutput(cell);
+    void execution.appendOutput(output);
+}
+
+export function createOutputWithErrorMessageForDisplay(errorMessage: string) {
     if (!errorMessage) {
         return;
     }
@@ -584,13 +593,11 @@ export function displayErrorsInCell(cell: NotebookCell, execution: NotebookCellE
             errorMessage = errorMessage.replace(matches[0], `<a href='${matches[2]}'>${matches[1]}</a>`);
         }
     }
-    void execution.clearOutput(cell);
-    const output = new NotebookCellOutput([
+    return new NotebookCellOutput([
         NotebookCellOutputItem.error({
             message: '',
             name: '',
             stack: `\u001b[1;31m${errorMessage.trim()}`
         })
     ]);
-    void execution.appendOutput(output);
 }
