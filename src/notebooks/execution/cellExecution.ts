@@ -188,7 +188,7 @@ export class CellExecution implements IDisposable {
                 if (!thisCellChange) {
                     return;
                 }
-                if (thisCellChange.outputs?.length === 0) {
+                if (!thisCellChange.outputs || thisCellChange.outputs.length === 0) {
                     // keep track of the fact that user has cleared the output.
                     this.clearLastUsedStreamOutput();
                 }
